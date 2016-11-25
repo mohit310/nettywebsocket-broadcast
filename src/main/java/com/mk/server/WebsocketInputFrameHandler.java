@@ -45,4 +45,9 @@ public class WebsocketInputFrameHandler extends SimpleChannelInboundHandler<WebS
         super.userEventTriggered(ctx, evt);
     }
 
+    @Override
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        websocketBroadcastHandler.removeSocketChannel((SocketChannel) ctx.channel());
+        super.channelUnregistered(ctx);
+    }
 }

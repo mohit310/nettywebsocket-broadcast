@@ -1,8 +1,5 @@
 package com.mk.server;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelOutboundHandlerAdapter;
-import io.netty.channel.ChannelPromise;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.slf4j.Logger;
@@ -15,7 +12,7 @@ import java.util.Locale;
 /**
  * Created by mk on 11/24/16.
  */
-public class WebsocketBroadcastHandler{
+public class WebsocketBroadcastHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(WebsocketBroadcastHandler.class);
 
@@ -27,16 +24,16 @@ public class WebsocketBroadcastHandler{
 
     public synchronized void broadcast(String message) {
         logger.debug("Broadcasting now");
-        List<SocketChannel> toBeRemoved = new ArrayList<>();
         for (SocketChannel socketChannel : channels) {
             if (socketChannel.isOpen() && socketChannel.isWritable()) {
-                socketChannel.writeAndFlush(new TextWebSocketFrame(message.toUpperCase(Locale.US)));
-            } else if (!socketChannel.isOpen()) {
-                toBeRemoved.add(socketChannel);
+                socketChannel.writeAndFlush(new TextWebSocketFrame(message));
             }
         }
-        channels.removeAll(toBeRemoved);
         logger.info("Total active sockets {}", channels.size());
     }
 
+    public synchronized void removeSocketChannel(SocketChannel channel) {
+        logger.debug("REMOVING channel: " + channel.toString());
+        channels.remove(channel);
+    }
 }

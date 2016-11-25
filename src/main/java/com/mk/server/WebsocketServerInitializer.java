@@ -29,7 +29,6 @@ public class WebsocketServerInitializer extends ChannelInitializer<SocketChannel
 
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
-        logger.debug("--------------------------------------IN INITIALIZER-----------------------------------------------------");
         ChannelPipeline pipeline = ch.pipeline();
         if (sslCtx != null) {
             pipeline.addLast(sslCtx.newHandler(ch.alloc()));
@@ -37,9 +36,7 @@ public class WebsocketServerInitializer extends ChannelInitializer<SocketChannel
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new HttpObjectAggregator(65536));
         pipeline.addLast(new WebSocketServerProtocolHandler(WEBSOCKET_PATH, null, true));
-        //pipeline.addLast(new WebsocketIndexPageHandler(WEBSOCKET_PATH));
         pipeline.addLast(new WebsocketInputFrameHandler(broadcastHandler));
-
     }
 
 
